@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="clearlooks">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LXQt Desktop Preview</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="desktop" class="desktop" aria-label="LXQt desktop preview">
+    <div class="wallpaper" role="presentation"></div>
+
+    <!-- Theme chooser (preview UI — not part of LXQt itself) -->
+    <div class="theme-chooser" id="theme-chooser" role="group" aria-label="LXQt theme">
+      <div class="theme-chooser-label">Theme</div>
+      <div class="theme-chooser-options">
+        <button type="button" class="theme-opt active" data-theme="clearlooks" title="LXQt Clearlooks (default)">
+          <span class="theme-preview theme-preview-clearlooks" aria-hidden="true">
+            <span class="tp-wall"></span>
+            <span class="tp-panel"></span>
+          </span>
+          <span class="theme-opt-name">LXQt Clearlooks</span>
+        </button>
+        <button type="button" class="theme-opt" data-theme="ambiance" title="LXQt Ambiance">
+          <span class="theme-preview theme-preview-ambiance" aria-hidden="true">
+            <span class="tp-wall"></span>
+            <span class="tp-panel"></span>
+          </span>
+          <span class="theme-opt-name">LXQt Ambiance</span>
+        </button>
+        <button type="button" class="theme-opt" data-theme="dark" title="LXQt Dark">
+          <span class="theme-preview theme-preview-dark" aria-hidden="true">
+            <span class="tp-wall"></span>
+            <span class="tp-panel"></span>
+          </span>
+          <span class="theme-opt-name">LXQt Dark</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop icons (PCManFM-Qt --desktop) -->
+    <div class="desktop-icons" id="desktop-icons" aria-label="Desktop icons">
+      <button type="button" class="desk-icon" data-place="home" title="Home">
+        <img src="assets/places/user-home.svg" alt="" draggable="false" />
+        <span>Home</span>
+      </button>
+      <button type="button" class="desk-icon" data-place="computer" title="Computer">
+        <img src="assets/places/computer.svg" alt="" draggable="false" />
+        <span>Computer</span>
+      </button>
+      <button type="button" class="desk-icon" data-place="trash" title="Trash">
+        <img src="assets/places/user-trash.svg" alt="" draggable="false" />
+        <span>Trash</span>
+      </button>
+    </div>
+
+    <!-- ========== Fancy Menu (lxqt-panel fancymenu) ========== -->
+    <div class="fancy-menu" id="fancy-menu" role="dialog" aria-label="Applications" hidden>
+      <div class="fancy-inner">
+        <div class="fancy-search-wrap">
+          <input
+            type="search"
+            id="fancy-search"
+            class="fancy-search"
+            placeholder="Search..."
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Search applications"
+          />
+        </div>
+
+        <div class="fancy-body">
+          <div class="fancy-apps-col">
+            <div class="fancy-apps" id="fancy-apps" role="list" aria-label="Applications"></div>
+            <p class="fancy-fav-empty" id="fancy-fav-empty" hidden>
+              Add your favorites by right clicking items from categories.
+            </p>
+          </div>
+          <aside class="fancy-cats" id="fancy-cats" role="listbox" aria-label="Categories"></aside>
+        </div>
+
+        <div class="fancy-footer">
+          <button type="button" class="fancy-foot-btn" id="fancy-about" title="About LXQt">
+            <img src="assets/status/lxqt_logo.png" alt="" draggable="false" />
+          </button>
+          <span class="fancy-foot-spacer"></span>
+          <button type="button" class="fancy-foot-btn" id="fancy-settings" title="LXQt Configuration Center">
+            <img src="assets/menu/preferences-system.svg" alt="" draggable="false" />
+          </button>
+          <button type="button" class="fancy-foot-btn" id="fancy-leave" title="Leave">
+            <img src="assets/status/system-shutdown.svg" alt="" draggable="false" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== Leave dialog (lxqt-leave) ========== -->
+    <div class="dialog-backdrop" id="leave-dialog" hidden>
+      <div class="leave-window" role="dialog" aria-label="Leave" aria-modal="true">
+        <p class="leave-prompt">What do you want the computer to do?</p>
+        <div class="leave-grid" id="leave-grid">
+          <button type="button" class="leave-item" data-leave="logout">
+            <img src="assets/status/system-log-out.svg" alt="" draggable="false" />
+            <span>Logout</span>
+          </button>
+          <button type="button" class="leave-item" data-leave="shutdown">
+            <img src="assets/status/system-shutdown.svg" alt="" draggable="false" />
+            <span>Shutdown</span>
+          </button>
+          <button type="button" class="leave-item" data-leave="suspend">
+            <img src="assets/status/system-suspend.svg" alt="" draggable="false" />
+            <span>Suspend</span>
+          </button>
+          <button type="button" class="leave-item" data-leave="lock">
+            <img src="assets/status/system-lock-screen.svg" alt="" draggable="false" />
+            <span>Lock screen</span>
+          </button>
+          <button type="button" class="leave-item" data-leave="reboot">
+            <img src="assets/status/system-reboot.svg" alt="" draggable="false" />
+            <span>Reboot</span>
+          </button>
+          <button type="button" class="leave-item" data-leave="hibernate">
+            <img src="assets/status/system-suspend-hibernate.svg" alt="" draggable="false" />
+            <span>Hibernate</span>
+          </button>
+        </div>
+        <div class="leave-actions">
+          <button type="button" class="qt-btn" id="leave-cancel">
+            <img src="assets/actions/dialog-cancel.svg" alt="" draggable="false" />
+            <span>Cancel</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== About LXQt dialog ========== -->
+    <div class="dialog-backdrop" id="about-dialog" hidden>
+      <div class="qt-window about-window" role="dialog" aria-label="About LXQt" aria-modal="true">
+        <div class="qt-titlebar" id="about-titlebar">
+          <span class="qt-title">About LXQt</span>
+          <div class="qt-buttons">
+            <button type="button" class="qt-btn-win qt-close" data-close="about" aria-label="Close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="about-body">
+          <img src="assets/status/lxqt_logo.png" alt="LXQt" class="about-logo" draggable="false" />
+          <h2>LXQt</h2>
+          <p class="about-ver">Version 2.2.0</p>
+          <p class="about-desc">
+            A lightweight Qt desktop environment.<br />
+            https://lxqt-project.org
+          </p>
+          <button type="button" class="qt-btn qt-btn-default" id="about-ok">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PCManFM-Qt file manager ========== -->
+    <div class="qt-window pcm-window" id="pcm-window" role="dialog" aria-label="PCManFM-Qt" hidden>
+      <div class="qt-titlebar" id="pcm-titlebar">
+        <img src="assets/apps/pcmanfm-qt.svg" alt="" class="qt-title-icon" draggable="false" />
+        <span class="qt-title" id="pcm-title">File Manager</span>
+        <div class="qt-buttons">
+          <button type="button" class="qt-btn-win qt-iconify" data-win="pcm" data-act="min" aria-label="Minimize" title="Minimize">−</button>
+          <button type="button" class="qt-btn-win qt-maximize" data-win="pcm" data-act="max" aria-label="Maximize" title="Maximize">□</button>
+          <button type="button" class="qt-btn-win qt-close" data-win="pcm" data-act="close" aria-label="Close" title="Close">×</button>
+        </div>
+      </div>
+
+      <div class="pcm-menubar" role="menubar">
+        <button type="button" class="pcm-menubar-item">File</button>
+        <button type="button" class="pcm-menubar-item">Edit</button>
+        <button type="button" class="pcm-menubar-item">View</button>
+        <button type="button" class="pcm-menubar-item">Go</button>
+        <button type="button" class="pcm-menubar-item">Bookmarks</button>
+        <button type="button" class="pcm-menubar-item">Tools</button>
+        <button type="button" class="pcm-menubar-item">Help</button>
+      </div>
+
+      <!-- Toolbar matches pcmanfm/main-win.ui: New Tab, Back, Forward, Up, Reload | view modes | Go -->
+      <div class="pcm-toolbar">
+        <button type="button" class="pcm-tb-btn" id="pcm-new-tab" title="New Tab">
+          <img src="assets/actions/tab-new.svg" alt="" draggable="false" />
+        </button>
+        <button type="button" class="pcm-tb-btn" id="pcm-back" title="Go Back">
+          <img src="assets/actions/go-previous.svg" alt="" draggable="false" />
+        </button>
+        <button type="button" class="pcm-tb-btn" id="pcm-forward" title="Go Forward">
+          <img src="assets/actions/go-next.svg" alt="" draggable="false" />
+        </button>
+        <button type="button" class="pcm-tb-btn" id="pcm-up" title="Go Up">
+          <img src="assets/actions/go-up.svg" alt="" draggable="false" />
+        </button>
+        <button type="button" class="pcm-tb-btn" id="pcm-reload" title="Reload">
+          <img src="assets/actions/view-refresh.svg" alt="" draggable="false" />
+        </button>
+        <span class="pcm-tb-sep"></span>
+        <button type="button" class="pcm-tb-btn active-view" id="pcm-view-icon" title="Icon View">
+          <img src="assets/actions/view-grid.svg" alt="" draggable="false" />
+        </button>
+        <button type="button" class="pcm-tb-btn" id="pcm-view-thumb" title="Thumbnail View">
+          <img src="assets/actions/view-preview.svg" alt="" draggable="false" />
+        </button>
+        <button type="button" class="pcm-tb-btn" id="pcm-view-list" title="Detailed List">
+          <img src="assets/actions/view-list.svg" alt="" draggable="false" />
+        </button>
+        <span class="pcm-tb-sep"></span>
+        <button type="button" class="pcm-tb-btn" id="pcm-go" title="Go">
+          <img src="assets/actions/go-jump.svg" alt="" draggable="false" />
+        </button>
+      </div>
+
+      <!-- Location bar (Fm::PathBar — location entry style) -->
+      <div class="pcm-pathbar">
+        <button type="button" class="pcm-tb-btn" id="pcm-home" title="Home">
+          <img src="assets/actions/go-home.svg" alt="" draggable="false" />
+        </button>
+        <input type="text" class="pcm-path" id="pcm-path" readonly spellcheck="false" />
+      </div>
+
+      <div class="pcm-body">
+        <aside class="pcm-sidebar" id="pcm-sidebar" aria-label="Places">
+          <!-- filled by JS -->
+        </aside>
+        <div class="pcm-main">
+          <div class="pcm-tabs" id="pcm-tabs">
+            <button type="button" class="pcm-tab active" id="pcm-tab-label">
+              <img src="assets/places/user-home.svg" alt="" draggable="false" />
+              <span id="pcm-tab-text">user</span>
+              <span class="pcm-tab-close" aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="pcm-content view-icons" id="pcm-content" role="list">
+            <!-- items filled by JS -->
+          </div>
+          <footer class="pcm-statusbar">
+            <span id="pcm-status">0 items</span>
+            <span class="pcm-status-free" id="pcm-free">Free space: 48.2 GiB (Total: 128.0 GiB)</span>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== QTerminal ========== -->
+    <div class="qt-window term-window" id="term-window" role="dialog" aria-label="QTerminal" hidden>
+      <div class="qt-titlebar" id="term-titlebar">
+        <img src="assets/apps/qterminal.svg" alt="" class="qt-title-icon" draggable="false" />
+        <span class="qt-title">QTerminal</span>
+        <div class="qt-buttons">
+          <button type="button" class="qt-btn-win qt-iconify" data-win="term" data-act="min" aria-label="Minimize" title="Minimize">−</button>
+          <button type="button" class="qt-btn-win qt-maximize" data-win="term" data-act="max" aria-label="Maximize" title="Maximize">□</button>
+          <button type="button" class="qt-btn-win qt-close" data-win="term" data-act="close" aria-label="Close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="term-menubar">
+        <button type="button" class="pcm-menubar-item">File</button>
+        <button type="button" class="pcm-menubar-item">Actions</button>
+        <button type="button" class="pcm-menubar-item">View</button>
+        <button type="button" class="pcm-menubar-item">Help</button>
+      </div>
+      <div class="term-body">
+        <pre class="term-output" id="term-output">user@lxqt:~$ <span class="term-cursor">█</span></pre>
+      </div>
+    </div>
+
+    <!-- ========== Volume popup ========== -->
+    <div class="volume-popup" id="volume-popup" hidden>
+      <div class="volume-popup-row">
+        <img src="assets/status/audio-volume-high.svg" alt="" id="volume-popup-icon" draggable="false" />
+        <input type="range" id="volume-slider" min="0" max="100" value="65" aria-label="Volume" />
+        <span id="volume-label">65%</span>
+      </div>
+    </div>
+
+    <!-- ========== Calendar / worldclock popup ========== -->
+    <div class="clock-popup" id="clock-popup" hidden>
+      <div class="clock-popup-time" id="clock-popup-time">14:32:00</div>
+      <div class="clock-popup-date" id="clock-popup-date">Monday, 20 July 2026</div>
+    </div>
+
+    <!-- ========== Toast ========== -->
+    <div class="toast" id="toast" hidden></div>
+
+    <!-- ========== Bottom panel (lxqt-panel defaults) ==========
+         plugins=fancymenu,desktopswitch,quicklaunch,taskbar,
+                 statusnotifier,tray,mount,volume,worldclock,showdesktop -->
+    <footer class="panel" id="panel" role="toolbar" aria-label="LXQt Panel">
+      <div class="panel-left">
+        <!-- Fancy Menu -->
+        <button type="button" class="panel-menu-btn" id="menu-btn" aria-expanded="false" aria-controls="fancy-menu" title="Applications">
+          <img src="assets/status/mainmenu.svg" alt="" class="menu-logo" id="menu-logo" draggable="false" />
+        </button>
+
+        <!-- Desktop switcher (2 desktops) -->
+        <div class="panel-deskswitch" id="deskswitch" aria-label="Desktop switcher">
+          <button type="button" class="desk-btn active" data-desk="1" title="Desktop 1">1</button>
+          <button type="button" class="desk-btn" data-desk="2" title="Desktop 2">2</button>
+        </div>
+
+        <!-- Quick Launch -->
+        <div class="panel-quicklaunch" aria-label="Quick Launch">
+          <button type="button" class="panel-launch" data-app="files" title="PCManFM-Qt File Manager">
+            <img src="assets/apps/pcmanfm-qt.svg" alt="" draggable="false" />
+          </button>
+          <button type="button" class="panel-launch" data-app="firefox" title="Firefox Web Browser">
+            <img src="assets/apps/firefox.svg" alt="" draggable="false" />
+          </button>
+          <button type="button" class="panel-launch" data-app="terminal" title="QTerminal">
+            <img src="assets/apps/qterminal.svg" alt="" draggable="false" />
+          </button>
+        </div>
+
+        <!-- Taskbar -->
+        <div class="taskbar" id="taskbar" aria-label="Task bar">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <div class="panel-right">
+        <!-- Status notifier / tray -->
+        <div class="panel-tray" aria-label="System tray">
+          <button type="button" class="panel-applet" id="net-btn" title="Network">
+            <img src="assets/status/network-wired.svg" alt="" draggable="false" />
+          </button>
+          <button type="button" class="panel-applet" id="mount-btn" title="Removable media">
+            <img src="assets/status/drive-removable-media.svg" alt="" draggable="false" />
+          </button>
+        </div>
+
+        <!-- Volume -->
+        <button type="button" class="panel-applet" id="volume-btn" title="Volume" aria-expanded="false" aria-controls="volume-popup">
+          <img src="assets/status/audio-volume-high.svg" alt="" id="volume-icon" draggable="false" />
+        </button>
+
+        <!-- World clock -->
+        <button type="button" class="panel-clock" id="clock-btn" title="World Clock" aria-expanded="false" aria-controls="clock-popup">
+          <span id="clock-text">14:32</span>
+        </button>
+
+        <!-- Show Desktop -->
+        <button type="button" class="panel-showdesk" id="show-desktop-btn" title="Show Desktop" aria-label="Show Desktop">
+          <img src="assets/status/show-desktop.svg" alt="" draggable="false" />
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
